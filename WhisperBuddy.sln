@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WhisperBuddy.UI", "WhisperBuddy.UI\WhisperBuddy.UI.csproj", "{96B46E51-4F81-4D1D-9C95-31903FA88AAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WhisperBuddy.Wasm", "WhisperBuddy.Wasm\WhisperBuddy.Wasm.csproj", "{96B46E51-4F81-4D1D-9C95-31903FA88AAF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhisperBuddy.Maui", "WhisperBuddy.Maui\WhisperBuddy.Maui.csproj", "{88A1FA57-52DC-4927-A84E-DAC824E711B0}"
 EndProject
