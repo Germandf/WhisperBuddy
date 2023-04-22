@@ -23,6 +23,7 @@ namespace WhisperBuddy.Maui
 #endif
 
             builder.Services.AddSingleton<WeatherForecastService>();
+            builder.Services.AddWhisperBuddyServices();
 
             return builder.Build();
         }

@@ -1,0 +1,28 @@
+﻿<MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
+    <ButtonTemplate>
+        <MudButton HtmlTag="label"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                   for="@context">
+            Upload Files
+        </MudButton>
+    </ButtonTemplate>
+</MudFileUpload>
+
+@if (_file is not null)
+{
+    <MudText Typo="@Typo.h6">@_file.Name <code>@_file.Size bytes</code></MudText>
+}
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Generate">Primary</MudButton>
+
+<MudList>
+    @foreach (var segment in _segments)
+    {
+        <MudListItem Icon="@Icons.Material.Filled.AttachFile">
+            @segment
+        </MudListItem>
+    }
+</MudList>
+
