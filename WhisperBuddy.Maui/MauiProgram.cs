@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using WhisperBuddy.Maui.Data;
+using WhisperBuddy.Maui.Services;
+using WhisperBuddy.Services;
 
 namespace WhisperBuddy.Maui
 {
@@ -24,6 +26,7 @@ namespace WhisperBuddy.Maui
 
             builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddWhisperBuddyServices();
+            builder.Services.AddSingleton<IFileSystemService, FileSystemService>();
 
             return builder.Build();
         }

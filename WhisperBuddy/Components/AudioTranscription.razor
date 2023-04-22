@@ -10,12 +10,12 @@
     </ButtonTemplate>
 </MudFileUpload>
 
-@if (_file is not null)
+@if (_browserFile is not null)
 {
-    <MudText Typo="@Typo.h6">@_file.Name <code>@_file.Size bytes</code></MudText>
+    <MudText Typo="@Typo.h6">@_browserFile.Name <code>@_browserFile.Size bytes</code></MudText>
 }
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Generate">Primary</MudButton>
+<MudButton Class="mr-2" Variant="Variant.Filled" Color="Color.Primary" OnClick="Generate">Generate</MudButton>
 
 <MudList>
     @foreach (var segment in _segments)
