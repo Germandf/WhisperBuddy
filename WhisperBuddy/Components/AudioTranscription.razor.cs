@@ -12,6 +12,7 @@ public partial class AudioTranscription
 {
     [Inject] public required ISnackbar Snackbar { get; set; }
     [Inject] public required IFileSystemService FileSystemService { get; set; }
+    [Inject] public required IWhisperModelService WhisperModelService { get; set; }
 
     private IBrowserFile? _browserFile;
     private List<string> _segments = new();
@@ -26,22 +27,16 @@ public partial class AudioTranscription
         try
         {
             var appDataDirectory = FileSystemService.GetAppDataDirectory();
-            var modelName = "ggml-base.bin";
-            var modelNameDirectory = Path.Combine(appDataDirectory, modelName);
+            var ggmlType = GgmlType.Base;
 
-            if (!File.Exists(modelNameDirectory))
+            if (!WhisperModelService.IsDownloaded(ggmlType))
             {
-                using var modelStream = await WhisperGgmlDownloader.GetGgmlModelAsync(GgmlType.Base);
-                using var fileWriter = File.OpenWrite(modelNameDirectory);
-                await modelStream.CopyToAsync(fileWriter);
+                await WhisperModelService.Download(ggmlType);
             }
 
-            using var whisperFactory = WhisperFactory.FromPath(modelNameDirectory);
-
-            using var processor = whisperFactory
-                .CreateBuilder()
-                .WithLanguageDetection()
-                .Build();
+            var whisperModelPath = WhisperModelService.GetPath(ggmlType);
+            using var whisperFactory = WhisperFactory.FromPath(whisperModelPath);
+            using var processor = whisperFactory.CreateBuilder().WithLanguageDetection().Build();
 
             if (_browserFile is null)
             {
