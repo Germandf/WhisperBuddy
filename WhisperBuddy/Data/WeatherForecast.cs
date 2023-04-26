@@ -1,4 +1,4 @@
-namespace WhisperBuddy.Maui.Data
+namespace WhisperBuddy.Data
 {
     public class WeatherForecast
     {
