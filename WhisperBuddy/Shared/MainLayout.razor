@@ -1,20 +1,28 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject ISettingsService SettingsService
 
-<MudThemeProvider/>
+<MudThemeProvider @bind-IsDarkMode="SettingsService.IsDarkMode" />
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
 <MudLayout>
     <MudAppBar>
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        WhisperBuddy
+        <MudIcon Icon="@Icons.Material.Filled.LibraryMusic" Color="Color.Inherit" />
+        <MudText Typo="Typo.h5" Class="ml-3">WhisperBuddy</MudText>
+        <MudSpacer />
+        @if (NavigationManager.Uri.Contains("settings"))
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="NavigateToIndex"
+                Color="Color.Inherit" Edge="Edge.End" />
+        }
+        else
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Settings" OnClick="NavigateToSettings"
+                Color="Color.Inherit" Edge="Edge.End" />
+        }
     </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen">
-        <MudNavMenu>
-            <MudNavLink Href="/" Match="NavLinkMatch.All">Index</MudNavLink>
-        </MudNavMenu>
-    </MudDrawer>
-    <MudMainContent>
+    <MudMainContent Class="my-4">
         <MudContainer MaxWidth="MaxWidth.Medium">
             @Body
         </MudContainer>
@@ -23,11 +31,19 @@
 
 @code {
 
-    bool _drawerOpen = true;
-
-    void DrawerToggle()
+    protected override void OnInitialized()
     {
-        _drawerOpen = !_drawerOpen;
+        SettingsService.OnStateHasChanged = StateHasChanged;
+    }
+
+    void NavigateToIndex()
+    {
+        NavigationManager.NavigateTo("");
+    }
+
+    void NavigateToSettings()
+    {
+        NavigationManager.NavigateTo("settings");
     }
 
 }

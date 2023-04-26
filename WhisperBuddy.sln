@@ -5,9 +5,9 @@ VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WhisperBuddy.Wasm", "WhisperBuddy.Wasm\WhisperBuddy.Wasm.csproj", "{96B46E51-4F81-4D1D-9C95-31903FA88AAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhisperBuddy.Maui", "WhisperBuddy.Maui\WhisperBuddy.Maui.csproj", "{88A1FA57-52DC-4927-A84E-DAC824E711B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WhisperBuddy.Maui", "WhisperBuddy.Maui\WhisperBuddy.Maui.csproj", "{88A1FA57-52DC-4927-A84E-DAC824E711B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhisperBuddy", "WhisperBuddy\WhisperBuddy.csproj", "{87233832-3F7F-4046-83A2-66A850B79DEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WhisperBuddy", "WhisperBuddy\WhisperBuddy.csproj", "{87233832-3F7F-4046-83A2-66A850B79DEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
