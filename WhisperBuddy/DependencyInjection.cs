@@ -11,5 +11,6 @@ public static class DependencyInjection
         services.AddMudServices();
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<IWhisperModelService, WhisperModelService>();
+        services.AddSingleton<IWhisperService, WhisperService>();
     }
 }

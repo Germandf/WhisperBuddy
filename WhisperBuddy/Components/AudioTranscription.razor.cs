@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using NAudio.Wave;
+using System.Diagnostics;
 using Whisper.net;
 using Whisper.net.Ggml;
 using WhisperBuddy.Services;
@@ -13,6 +14,7 @@ public partial class AudioTranscription
     [Inject] public required ISnackbar Snackbar { get; set; }
     [Inject] public required IFileSystemService FileSystemService { get; set; }
     [Inject] public required IWhisperModelService WhisperModelService { get; set; }
+    [Inject] public required IWhisperService WhisperService { get; set; }
 
     private IBrowserFile? _browserFile;
     private List<string> _segments = new();
@@ -33,10 +35,6 @@ public partial class AudioTranscription
             {
                 await WhisperModelService.Download(ggmlType);
             }
-
-            var whisperModelPath = WhisperModelService.GetPath(ggmlType);
-            using var whisperFactory = WhisperFactory.FromPath(whisperModelPath);
-            using var processor = whisperFactory.CreateBuilder().WithLanguageDetection().Build();
 
             if (_browserFile is null)
             {
@@ -62,7 +60,7 @@ public partial class AudioTranscription
                 await file.CopyToAsync(outputMemoryStream);
                 outputMemoryStream.Seek(0, SeekOrigin.Begin);
 
-                await foreach (var segmentData in processor.ProcessAsync(outputMemoryStream))
+                await foreach (var segmentData in WhisperService.TranscribeAudio(ggmlType, outputMemoryStream))
                 {
                     _segments.Add($"{segmentData.Start} -> {segmentData.End} : {segmentData.Text}");
                     StateHasChanged();
