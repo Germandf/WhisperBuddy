@@ -38,7 +38,10 @@ public partial class AudioTranscription
 
             using var whisperFactory = WhisperFactory.FromPath(modelNameDirectory);
 
-            using var processor = whisperFactory.CreateBuilder().Build();
+            using var processor = whisperFactory
+                .CreateBuilder()
+                .WithLanguageDetection()
+                .Build();
 
             if (_browserFile is null)
             {
@@ -53,7 +56,7 @@ public partial class AudioTranscription
                 await stream.CopyToAsync(memoryStream);
                 memoryStream.Seek(0, SeekOrigin.Begin);
 
-                var reader = new WaveFileReader(memoryStream);
+                var reader = new StreamMediaFoundationReader(memoryStream);
                 var newFormat = new WaveFormat(16000, reader.WaveFormat.Channels);
                 var resampler = new MediaFoundationResampler(reader, newFormat);
                 var outputDirectory = Path.Combine(appDataDirectory, Path.ChangeExtension(Path.GetRandomFileName(), ".wav"));
