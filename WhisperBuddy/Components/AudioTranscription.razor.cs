@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using NAudio.Wave;
 using Whisper.net;
 using Whisper.net.Ggml;
 using WhisperBuddy.Services;
@@ -47,14 +48,26 @@ public partial class AudioTranscription
             {
                 _segments = new();
 
-                await using FileStream fileStream = new(
-                    Path.Combine(appDataDirectory, _browserFile.Name), FileMode.Create);
+                using var stream = _browserFile.OpenReadStream(long.MaxValue);
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                memoryStream.Seek(0, SeekOrigin.Begin);
 
-                await _browserFile.OpenReadStream(long.MaxValue).CopyToAsync(fileStream);
+                var reader = new WaveFileReader(memoryStream);
+                var newFormat = new WaveFormat(16000, reader.WaveFormat.Channels);
+                var resampler = new MediaFoundationResampler(reader, newFormat);
+                var outputDirectory = Path.Combine(appDataDirectory, Path.ChangeExtension(Path.GetRandomFileName(), ".wav"));
+                WaveFileWriter.CreateWaveFile(outputDirectory, resampler);
 
-                await foreach (var segmentData in processor.ProcessAsync(fileStream))
+                var file = new FileStream(outputDirectory, FileMode.Open, FileAccess.Read);
+                using var outputMemoryStream = new MemoryStream();
+                await file.CopyToAsync(outputMemoryStream);
+                outputMemoryStream.Seek(0, SeekOrigin.Begin);
+
+                await foreach (var segmentData in processor.ProcessAsync(outputMemoryStream))
                 {
-                    _segments.Add(segmentData.Text);
+                    _segments.Add($"{segmentData.Start} -> {segmentData.End} : {segmentData.Text}");
+                    StateHasChanged();
                 }
             }
         }
