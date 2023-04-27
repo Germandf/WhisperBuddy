@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
-using NAudio.Wave;
-using System.Diagnostics;
-using Whisper.net;
+using System.IO;
+using System.Text;
 using Whisper.net.Ggml;
 using WhisperBuddy.Services;
 
@@ -12,9 +11,9 @@ namespace WhisperBuddy.Components;
 public partial class AudioTranscription
 {
     [Inject] public required ISnackbar Snackbar { get; set; }
-    [Inject] public required IFileSystemService FileSystemService { get; set; }
     [Inject] public required IWhisperModelService WhisperModelService { get; set; }
     [Inject] public required IWhisperService WhisperService { get; set; }
+    [Inject] public required IWavService WavService { get; set; }
 
     private IBrowserFile? _browserFile;
     private List<string> _segments = new();
@@ -28,7 +27,6 @@ public partial class AudioTranscription
     {
         try
         {
-            var appDataDirectory = FileSystemService.GetAppDataDirectory();
             var ggmlType = GgmlType.Base;
 
             if (!WhisperModelService.IsDownloaded(ggmlType))
@@ -43,24 +41,16 @@ public partial class AudioTranscription
             else
             {
                 _segments = new();
-
+                
                 using var stream = _browserFile.OpenReadStream(long.MaxValue);
                 using var memoryStream = new MemoryStream();
                 await stream.CopyToAsync(memoryStream);
-                memoryStream.Seek(0, SeekOrigin.Begin);
 
-                var reader = new StreamMediaFoundationReader(memoryStream);
-                var newFormat = new WaveFormat(16000, reader.WaveFormat.Channels);
-                var resampler = new MediaFoundationResampler(reader, newFormat);
-                var outputDirectory = Path.Combine(appDataDirectory, Path.ChangeExtension(Path.GetRandomFileName(), ".wav"));
-                WaveFileWriter.CreateWaveFile(outputDirectory, resampler);
+                var outputDirectory = WavService.ConvertToWav(memoryStream);
 
                 var file = new FileStream(outputDirectory, FileMode.Open, FileAccess.Read);
-                using var outputMemoryStream = new MemoryStream();
-                await file.CopyToAsync(outputMemoryStream);
-                outputMemoryStream.Seek(0, SeekOrigin.Begin);
 
-                await foreach (var segmentData in WhisperService.TranscribeAudio(ggmlType, outputMemoryStream))
+                await foreach (var segmentData in WhisperService.TranscribeAudio(ggmlType, file))
                 {
                     _segments.Add($"{segmentData.Start} -> {segmentData.End} : {segmentData.Text}");
                     StateHasChanged();

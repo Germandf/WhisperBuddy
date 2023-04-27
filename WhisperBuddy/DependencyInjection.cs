@@ -10,6 +10,7 @@ public static class DependencyInjection
     {
         services.AddMudServices();
         services.AddSingleton<ISettingsService, SettingsService>();
+        services.AddSingleton<IWavService, WavService>();
         services.AddSingleton<IWhisperModelService, WhisperModelService>();
         services.AddSingleton<IWhisperService, WhisperService>();
     }
