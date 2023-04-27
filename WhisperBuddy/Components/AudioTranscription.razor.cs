@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using System;
 using System.IO;
 using System.Text;
 using Whisper.net.Ggml;
@@ -17,6 +18,8 @@ public partial class AudioTranscription
 
     private IBrowserFile? _browserFile;
     private List<string> _segments = new();
+    private double _progressPercentage;
+    private bool _generating;
 
     private void UploadFiles(IBrowserFile file)
     {
@@ -25,6 +28,8 @@ public partial class AudioTranscription
 
     private async Task Generate()
     {
+        _generating = true;
+
         try
         {
             var ggmlType = GgmlType.Base;
@@ -46,13 +51,14 @@ public partial class AudioTranscription
                 using var memoryStream = new MemoryStream();
                 await stream.CopyToAsync(memoryStream);
 
-                var outputDirectory = WavService.ConvertToWav(memoryStream);
+                var wavFileInfo = WavService.ConvertToWav(memoryStream);
 
-                var file = new FileStream(outputDirectory, FileMode.Open, FileAccess.Read);
+                var file = new FileStream(wavFileInfo.Path, FileMode.Open, FileAccess.Read);
 
                 await foreach (var segmentData in WhisperService.TranscribeAudio(ggmlType, file))
                 {
                     _segments.Add($"{segmentData.Start} -> {segmentData.End} : {segmentData.Text}");
+                    _progressPercentage = (double) segmentData.End.TotalMilliseconds / wavFileInfo.TotalTime.TotalMilliseconds * 100;
                     StateHasChanged();
                 }
             }
@@ -61,5 +67,7 @@ public partial class AudioTranscription
         {
             Snackbar.Add(ex.Message, Severity.Error);
         }
+
+        _generating = false;
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace WhisperBuddy.Services;
+﻿using WhisperBuddy.Models;
+
+namespace WhisperBuddy.Services;
 
 public interface IWavService
 {
-    string ConvertToWav(Stream stream);
+    WavFileInfo ConvertToWav(Stream stream);
 }
