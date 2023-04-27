@@ -1,6 +1,6 @@
 ﻿@page "/settings"
 
-<MudText Typo="Typo.h3" Align="Align.Center">Settings</MudText>
+<MudText Class="my-4" Typo="Typo.h4" Align="Align.Center">Settings</MudText>
 
 <MudSwitch @bind-Checked="@SettingsService.IsDarkMode"
            ThumbIcon="@(SettingsService.IsDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.LightMode)"
