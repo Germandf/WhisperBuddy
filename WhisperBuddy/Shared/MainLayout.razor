@@ -1,6 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject NavigationManager NavigationManager
-@inject ISettingsService SettingsService
 
 <MudThemeProvider @bind-IsDarkMode="SettingsService.IsDarkMode" />
 <MudDialogProvider/>
@@ -28,22 +26,3 @@
         </MudContainer>
     </MudMainContent>
 </MudLayout>
-
-@code {
-
-    protected override void OnInitialized()
-    {
-        SettingsService.OnStateHasChanged = StateHasChanged;
-    }
-
-    void NavigateToIndex()
-    {
-        NavigationManager.NavigateTo("");
-    }
-
-    void NavigateToSettings()
-    {
-        NavigationManager.NavigateTo("settings");
-    }
-
-}

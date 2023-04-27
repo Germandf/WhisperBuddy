@@ -1,5 +1,4 @@
 ﻿@page "/settings"
-@inject ISettingsService SettingsService
 
 <MudText Typo="Typo.h3" Align="Align.Center">Settings</MudText>
 
@@ -8,7 +7,3 @@
            ThumbIconColor="@(SettingsService.IsDarkMode ? Color.Dark : Color.Warning)">
     Theme mode: @(SettingsService.IsDarkMode ? "Dark" : "Light")
 </MudSwitch>
-
-@code {
-
-}
